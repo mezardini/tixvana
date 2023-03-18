@@ -506,15 +506,15 @@ def payment_response(request):
 
 
 
-import os
-from rave_python import Rave
+# import os
+# from rave_python import Rave
 
-def verifyaza(account_name,account_number,bank):
-    rave = Rave(os.getenv("FLW_PUBLIC_KEY"), os.getenv("FLW_SECRET_KEY"))
-    details = {
-      "account_number": account_number,
-      "account_bank": bank
-    }
-    response = rave.Transfer.accountResolve(details)
-    context = {'response':response}
-    return redirect('profile', context)
+# def verifyaza(account_name,account_number,bank):
+#     rave = Rave(os.getenv("FLW_PUBLIC_KEY"), os.getenv("FLW_SECRET_KEY"))
+#     details = {
+#       "account_number": account_number,
+#       "account_bank": bank
+#     }
+#     response = rave.Transfer.accountResolve(details)
+#     context = {'response':response}
+#     return redirect('profile', context)
