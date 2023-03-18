@@ -16,8 +16,7 @@ from django.template.loader import render_to_string
 from django.core import mail
 from datetime import datetime
 from django.conf import settings
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import environ
