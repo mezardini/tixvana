@@ -1,0 +1,257 @@
+{% load static %}
+{% load mathfilters %}
+
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tixvana - Ticketing made easy </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+   <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'assetz/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/style.css' %}">
+    
+</head>
+    <!--? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{% static 'assetz/img/logo/TIXVANA.svg' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+    <header>
+        <!--? Header Start -->
+        <div class="header-area">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <!-- Logo -->
+                        <div class="col-xl-2 col-lg-2 col-md-1">
+                            <div class="logo">
+                               <a href="{% url 'index' %}"><img src="{% static 'assetz/img/logo/TIXVANA.svg' %}" alt=""></a>
+                            </div>
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-10">
+                            <div class="menu-main d-flex align-items-center justify-content-end">
+                                <!-- Main-menu -->
+                                <div class="main-menu f-right d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li>  <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search' %}">
+                                                <input class="form-control mr-sm-2"  name="search_term" placeholder="Search" >
+                                                
+                                              </form>
+                                            </li>
+                                            <li><a href="{% url 'browse' %}">Policy</a></li>
+                                            
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            </div>
+                        </div>   
+                        <!-- Mobile Menu -->
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+    </header>
+    <main>
+        <!--? Hero Start -->
+        
+        </div>
+        <!-- Hero End -->
+        <!-- ================ contact section start ================= -->
+        <section class="contact-section">
+            
+                
+        
+            <div class="container">
+                <div class="row">  
+                  <div class="col-12">
+                    <h2></h2>
+                    <div class="card">
+                        <div class="card-header">
+                          <b>Ticket Details</b>
+                          <ul class="list-group ">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Event
+                                <span class="badge "><h6><strong>{{event.title}}</strong> </h6> </span>
+                              </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Ticket Price
+                                <span class="badge ">$ {{event.ticket_price}}</span>
+                              </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Event Date & Time
+                                <span class="badge ">{{event.date}}</span>
+                              </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Event Date & Time
+                                {% if tix_count < 10 %}
+                                <span class="badge ">0</span>
+                                {% elif tix_count > 10 and tix_count < 101 %}
+                                <span class="badge ">5%</span>
+                                {% elif tix_count > 100 and tix_count < 501 %}
+                                <span class="badge ">3.5%</span>
+                                {% elif tix_count > 500 %}
+                                <span class="badge ">2%</span>
+                                {% endif %}
+                              </li>
+                              
+                        </ul>
+                        </div>
+                        <div class="card-body">
+                            <h5> <b>Contact Information</b></h5>
+                            <form action="https://newwebpay.interswitchng.com/collections/w/pay" method="POST" enctype="multipart/form-data">
+                               {% csrf_token %}
+                                <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                    <label for="inputPassword4">First Name</label>
+                                    <input type="text" class="form-control" id="inputPassword4" name="customer[name]" placeholder="First name" required>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                    <label for="inputPassword4">Last Name</label>
+                                    <input type="text" class="form-control" id="inputPassword4" name="customer[name]" placeholder="Last name" required>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                    <label for="inputEmail4">Email</label>
+                                    <input type="text" class="form-control" id="inputPassword4" name="customer[email]" placeholder="Email Address" required>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                    <label for="inputPassword4">Phone</label>
+                                    <input type="text" class="form-control" id="inputPassword4" name="customer[name]" placeholder="Phone" required>
+                                  </div>
+                                </div>
+                                
+                              <input type="hidden" name='merchant_code' value='MX80958' />
+                              <input type="hidden" name='pay_item_id' value='Default_Payable_MX80958' />
+                              <input type="hidden" name='site_redirect_url' value='https://twitter.com/ftmezard' /> 
+                              <input type="hidden" name='txn_ref' value='0094959694059' />
+                              <input type="hidden" name='amount' value='{{price}}'/>
+                              <input type="hidden" name='currency' value='566' />
+                                <button type="submit" value='Make Payment' class="btn btn-primary">Proceed</button>
+                            </form>
+                            <br>
+                            
+                        </div>
+                      </div>
+                  </div>
+                  
+                  
+                  
+                </div>
+              </div>
+        </section>
+        <!-- ================ contact section end ================= -->
+    </main>
+   
+    <!-- Scroll Up -->
+    <div id="back-top" >
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+
+    <script src="{% static './assetz/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="{% static './assetz/js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static './assetz/js/popper.min.js' %}"></script>
+    <script src="{% static './assetz/js/bootstrap.min.js' %}"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="{% static './assetz/js/jquery.slicknav.min.js' %}"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="{% static './assetz/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static './assetz/js/slick.min.js' %}"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="{% static './assetz/js/wow.min.js' %}"></script>
+    <script src="{% static './assetz/js/animated.headline.js' %}"></script>
+    
+    <!-- Nice-select, sticky -->
+    <script src="{% static './assetz/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.sticky.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.magnific-popup.js' %}"></script>
+
+    <!-- contact js -->
+    <script src="{% static './assetz/js/contact.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.form.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static './assetz/js/mail-script.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.ajaxchimp.min.js' %}"></script>
+    
+    <!-- Jquery Plugins, main Jquery -->	
+    <script src="{% static './assetz/js/plugins.js' %}"></script>
+    <script src="{% static './assetz/js/main.js' %}"></script>
+    <script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'admin/vendors/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'admin/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <script src="{% static 'admin/vendors/progressbar.js/progressbar.min.js' %}"></script>
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'admin/js/off-canvas.js' %}"></script>
+  <script src="{% static 'admin/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'admin/js/template.js' %}"></script>
+  <script src="{% static 'admin/js/settings.js' %}"></script>
+  <script src="{% static 'admin/js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="{% static 'admin/js/jquery.cookie.js' %}" type="text/javascript"></script>
+  <script src="{% static 'admin/js/dashboard.js' %}"></script>
+  <script src="{% static 'admin/js/Chart.roundedBarCharts.js' %}"></script>
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+  <script>
+    function makePayment() {
+      FlutterwaveCheckout({
+        public_key: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+        tx_ref: "{{ref}}",
+        amount: 54600,
+        currency: "NGN",
+        payment_options: "card, banktransfer, ussd",
+        redirect_url: "https://twitter.com/ftmezard",
+        meta: {
+          consumer_id: 23,
+          consumer_mac: "92a3-912ba-1192a",
+        },
+        customer: {
+          email: "mezardini@gmail.com",
+          phone_number: "09060926081",
+          name: "Rose DeWitt Bukater",
+        },
+        customizations: {
+          title: "The Titanic Store",
+          description: "Payment for an awesome cruise",
+          logo: "https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg",
+        },
+      });
+    }
+  </script>
+
+    </body>
+</html>

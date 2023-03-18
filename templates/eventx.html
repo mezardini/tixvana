@@ -1,0 +1,255 @@
+{% load static %}
+ 
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tixvana - Ticketing made easy </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    
+
+	<!-- CSS here -->
+	<link rel="stylesheet" href="{% static 'assetz/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'assetz/css/gijgo.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/animate.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/magnific-popup.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/fontawesome-all.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/slick.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'assetz/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+</head>
+<body>
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{% static 'assetz/img/logo/TIXVANA.svg' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+<header>
+    <!--? Header Start -->
+    <div class="header-area">
+        <div class="main-header header-sticky">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <!-- Logo -->
+                    <div class="col-xl-2 col-lg-2 col-md-1">
+                        <div class="logo">
+                            <a href="{% url 'index' %}"><img src="{% static 'assetz/img/logo/TIXVANA.svg' %}" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-10 col-lg-10 col-md-10">
+                        <div class="menu-main d-flex align-items-center justify-content-end">
+                            <!-- Main-menu -->
+                            <div class="main-menu f-right d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li>  <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search' %}">
+                                            <input class="form-control mr-sm-2"  name="search_term" placeholder="Search" >
+                                            
+                                          </form></li>
+                                        <li><a href="{% url 'browse' %}">Discover</a></li>
+                                        <!-- <li><a href="blog.html">Blog</a>
+                                            <ul class="submenu">
+                                                <li><a href="blog.html">Blog</a></li>
+                                                <li><a href="blog_details.html">Blog Details</a></li>
+                                                <li><a href="elements.html">Element</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="contact.html">Contact</a></li> -->
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="header-right-btn f-right d-none d-lg-block ml-30">
+                                <a href="{% url 'makepayment' event.slug %}" class="btn header-btn">Get Your Ticket</a>
+                            </div>
+                        </div>
+                    </div>   
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+</header>
+<main>
+    <!--? slider Area Start-->
+    <div class="container">
+        <section class="about-low-area section-padding2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        <div class="about-caption mb-50">
+                            <!-- Section Tittle -->
+                            <div class="section-tittle mb-35">
+                                <h2>{{event.title}}</h2>
+                            </div>
+                            <p>{{event.description}}</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10">
+                                <div class="single-caption mb-20">
+                                    <div class="caption-icon">
+                                        <span class=""></span>
+                                    </div>
+                                    <div class="caption">
+                                        <h5>Amount</h5>
+                                        <p>₦ {{event.ticket_price}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10">
+                                <div class="single-caption mb-20">
+                                    <div class="caption-icon">
+                                        <span class=""></span>
+                                    </div>
+                                    <div class="caption">
+                                        <h5>When</h5>
+                                        <p>{{event.date}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10">
+                                <div class="single-caption mb-20">
+                                    <div class="caption-icon">
+                                        <span class=""></span>
+                                    </div>
+                                    <div class="caption">
+                                        <h5>Organizer</h5>
+                                        <p>{{event.creator.user.first_name}} {{event.creator.user.last_name}} </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10">
+                                <div class="single-caption mb-20">
+                                    <div class="caption-icon">
+                                        <span class=""></span>
+                                    </div>
+                                    <div class="caption">
+                                        <h5>Where</h5>
+                                        <p> {{event.venue}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10">
+                            <a href="{% url 'makepayment' event.slug %}" class="btn mt-50">Get Your Ticket</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <!-- about-img -->
+                        <div class="about-img ">
+                            <div class="about-back-img ">
+                                <img src="{{event.poster.url}}" alt="" width="400" height="630">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- slider Area End-->
+    <!--? About Law Start-->
+    
+    
+    <!-- About Law End-->
+    <!--? Brand Area Start -->
+    
+    <!-- Brand Area End -->  
+    <!--? accordion -->
+    
+    <!-- accordion End -->
+    <!--? gallery Products Start -->
+    <div class="gallery-area fix">
+        <div class="container-fluid p-0">
+            <div class="row ">
+                {% for photo in media %}
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="gallery-box">
+                        <div class="single-gallery">
+                            <img src="{{photo.photos.url}}" alt="">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- gallery Products End -->
+    <!--? Pricing Card Start -->
+   
+    <!-- Pricing Card End -->
+    <!--? Brand Area Start-->
+    
+    <!-- Brand Area End-->
+    <!--? Blog Area Start -->
+    
+    <!-- Blog Area End -->
+    </main>
+    <br>
+    <br>
+    
+    <!-- Scroll Up -->
+    <div id="back-top" >
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+
+    <script src="{% static './assetz/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="{% static './assetz/js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static './assetz/js/popper.min.js' %}"></script>
+    <script src="{% static './assetz/js/bootstrap.min.js' %}"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="{% static './assetz/js/jquery.slicknav.min.js' %}"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="{% static './assetz/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static './assetz/js/slick.min.js' %}"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="{% static './assetz/js/wow.min.js' %}"></script>
+    <script src="{% static './assetz/js/animated.headline.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.magnific-popup.js' %}"></script>
+
+    <!-- Date Picker -->
+    <script src="{% static './assetz/js/gijgo.min.js' %}"></script>
+    <!-- Nice-select, sticky -->
+    <script src="{% static './assetz/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.sticky.js' %}"></script>
+    
+    <!-- counter , waypoint -->
+    <script src="{% static './assetz/js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static './assetz/js/waypoints.min.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.countdown.min.js' %}"></script>
+    <!-- contact js -->
+    <script src="{% static './assetz/js/contact.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.form.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static './assetz/js/mail-script.js' %}"></script>
+    <script src="{% static './assetz/js/jquery.ajaxchimp.min.js' %}"></script>
+    
+    <!-- Jquery Plugins, main Jquery -->	
+    <script src="{% static './assetz/js/plugins.js' %}"></script>
+    <script src="{% static './assetz/js/main.js' %}"></script>
+    
+    </body>
+</html>
