@@ -1,12 +1,12 @@
 from tixvana.settings import *
 
 
-DEBUG = True
+DEBUG = False
 
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: update this when you have the production host
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['tixvana.onrender.com']
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
