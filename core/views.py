@@ -137,7 +137,7 @@ def profile(request, slug):
     sum_totalx  = tickets.count()
     sum_total =  sum(tickets.values_list('ticket_price', flat=True))
     ticket_sold = events.count()
-    avg_price = sum_total/ticket_sold
+    # avg_price = sum_total/ticket_sold
     # earnings of organizer, get the price of tickets sold for an event and then add all events for an organizer
 
 
@@ -166,7 +166,8 @@ def profile(request, slug):
     return render(request, 'admin.html', context)
 
 @login_required(login_url='signin')
-def create_event(request):
+def create_event(request, pk):
+    profilex = Organizer.objects.get(id=pk)
     if request.method == 'POST':
         images = request.FILES.getlist('images')
         eventcreate = Event.objects.create(
@@ -175,7 +176,7 @@ def create_event(request):
             description = request.POST.get('description'),
             tickets_ava = request.POST.get('limit'),
             ticket_price = request.POST.get('price'),
-            creator = request.user,
+            creator = profilex,
             category = request.POST.get('category'),
             date = request.POST.get('date'),
             slug = slugify(request.POST['title']),  
@@ -203,7 +204,7 @@ def create_event(request):
             
         return redirect('details', slug=eventcreate.slug)
 
-    context = {}
+    context = {'profile':profilex}
     return render(request, 'create_event.html', context)
 
 
@@ -284,8 +285,9 @@ def bookmarklist(request, pk):
     context = {'bookmarks':bookmarks}
     return render(request, 'bookmarks.html', context)
 
-    
+@login_required(login_url='signin')   
 def organizer(request):
+    
     if request.method == 'POST':
         headers = {
             'Authorization': env('Bearer'),
@@ -300,26 +302,28 @@ def organizer(request):
         print(data)
         x = data.get("data").get("account_name")
         aza_name = x.lower()
-        account_name = request.POST.get('aza_name').lower()
+        account_namex = aza_name.lower()
+        
 
-        if aza_name != account_name:
+        if aza_name != account_namex:
             messages.error(request, "Account credentials invalid!.")
             return render(request, 'org_create.html')
-        
-        org = Organizer.objects.create(
-            # user = request.user,
-            phone = request.POST.get('phone'),
-            account_number = request.POST.get('aza_num'),
-            account_name = request.POST.get('aza_name'),
-            bank = request.POST.get('bank'),
-            poster = request.FILES.get('image'),
-            biz_name = request.POST.get('biz_name'),
-            slug = slugify(request.POST['biz_name']),
-        )
-        org.save()
-        user_group = Group.objects.get(name="Organizers")
-        org.groups.add(user_group)
-        return redirect('profile', slug=org.slug)
+        else:
+            
+            org = Organizer.objects.create(
+                user = request.user,
+                phone = request.POST.get('phone'),
+                account_number = request.POST.get('aza_num'),
+                account_name = account_namex,
+                bank_code = request.POST.get('bank'),
+                biz_name = request.POST.get('biz_name'),
+                slug = slugify(request.POST['biz_name']),
+            )
+            org.save()
+            user_group = Group.objects.get(name="Organizers")
+            request.user.groups.add(user_group)
+            return redirect('profile', slug=org.slug)
+    
     return render(request, 'org_create.html')
 
 def signup(request):
@@ -417,7 +421,10 @@ def verifymail(request):
     return render(request, 'verify.html')
 
 def signin(request):
+    users_in_group = Group.objects.get(name="Organizers").user_set.all()
+    organizer = Organizer.objects.all()
     if request.method == 'POST':
+        
         organizer = Organizer.objects.all()
         email = request.POST.get('email')
         password = request.POST['password']
@@ -436,10 +443,12 @@ def signin(request):
             auth.login(request, user)
             return redirect('index')
         elif user is not None and user is not organizer:
+            auth.login(request, user)
             return redirect('organizer')
         else:
             messages.error(request, "Incorrect username or password.")
-            return render(request, 'lsigin.html')
+            return render(request, 'signin.html')
+    
     return render(request, 'signin.html')
 
 def signout(request):

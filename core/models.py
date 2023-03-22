@@ -70,8 +70,8 @@ class Organizer(models.Model):
     phone = models.CharField(max_length=20)
     biz_name = models.CharField(max_length=1000,null=True)
     slug = models.SlugField(max_length=500, null=False, unique=True)
-    account_number = models.IntegerField(null=True)
-    bank_code = models.CharField(choices=Code, null=True, max_length=4)
+    account_number = models.BigIntegerField(null=True)
+    bank_code = models.CharField(choices=Code, null=True, max_length=400)
     account_name = models.CharField(max_length=200,null=True)
 
     def __str__(self):
