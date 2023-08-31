@@ -30,10 +30,11 @@ environ.Env.read_env()
 # Create your views here.
 def index(request):
     events = Event.objects.all()
-    users_in_group = Group.objects.get(name="Organizers").user_set.all()
+    # users_in_group = Group.objects.get(name="Organizers").user_set.all()
     organizer = Organizer.objects.all()
+    
 
-    context = {'events':events, 'users_in_group':users_in_group, 'organizer':organizer}
+    context = {'events':events,  'organizer':organizer}
     return render(request, 'home.html', context)
 
 def browse(request):
@@ -369,22 +370,22 @@ def signup(request):
                 # context = {'user_name': first_name,'token':   token}
                 # template = template_env.get_template('templates/email.html')
                 # output_text = template.render(context)
-                # send_mail(
-                #     'Ticket booked!!!',
-                #      html_message,
-                #     'tixvana@gmail.com',
-                #     [email],
-                #     fail_silently=False,
-                # )
-                mail = EmailMessage(
-                    "Registered",
+                send_mail(
+                    'Ticket booked!!!',
                     html_message,
-                    'settings.EMAIL_HOST_USER',
+                    'tixvana@gmail.com',
                     [email],
+                    fail_silently=False,
                 )
-                mail.fail_silently = False
-                mail.content_subtype = 'html'
-                mail.send()
+                # mail = EmailMessage(
+                #     "Registered",
+                #     html_message,
+                #     'settings.EMAIL_HOST_USER',
+                #     [email],
+                # )
+                # mail.fail_silently = False
+                # mail.content_subtype = 'html'
+                # mail.send()
                 user = User.objects.create_user(username=username,first_name=first_name, password=password1, email=email)
                 
                 user.is_active = False
@@ -527,3 +528,4 @@ def payment_response(request):
 #     response = rave.Transfer.accountResolve(details)
 #     context = {'response':response}
 #     return redirect('profile', context)
+
