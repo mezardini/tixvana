@@ -95,7 +95,7 @@ class Event(models.Model):
     date = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=50, choices=STATUS, null=True)
-    poster = models.ImageField(null=True, blank=False, upload_to='media')
+    poster = models.ImageField(null=True, blank=True, upload_to='media')
     ticket_price = models.FloatField(null=True)
     tickets_ava  = models.IntegerField(blank=True, null=True)
     views = models.IntegerField(default=0)

@@ -7,6 +7,9 @@ from django.contrib.auth.models import User, auth, Group
 from django.contrib import messages
 from .models import Event, Review, Category, Bookmark, Organizer, Media, Ticket
 import random
+from django.utils.html import format_html
+from django.utils import timezone
+from django.db.models import F, Q
 from django.db.models import Sum
 from django.template.defaultfilters import slugify  
 from django.core.mail import EmailMessage
@@ -16,7 +19,7 @@ from django.template.loader import render_to_string
 from django.core import mail
 from datetime import datetime
 from django.conf import settings
-
+from decouple import config
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import environ
@@ -45,12 +48,14 @@ def browse(request):
 
 def search_event(request):
     room = Event.objects.all()
-    if request.method == 'GET':
-        searched = request.GET['search_term']
-        topics = Event.objects.filter(title__contains = searched)
-        return render(request, 'search_event.html', {'searched':searched, 'room':room, 'topics':topics})
+    searched = request.GET.get('search_term', '')
 
-    context = {'room':room,  'topics':topics}
+    if searched:
+        topics = Event.objects.filter(Q(title__icontains=searched) | Q(description__icontains=searched))
+    else:
+        topics = []
+
+    context = {'room': room, 'searched': searched, 'topics': topics}
     return render(request, 'search_event.html', context)
 
 def terms(request):
@@ -76,47 +81,64 @@ def contact(request):
     return redirect('index')
 
 def details(request, slug):
-    event = Event.objects.get(slug=slug)
-    event.views=event.views+1
-    event.save()
+    event = get_object_or_404(Event, slug=slug)
+    
+    # Increment the views count using F() expression to avoid race conditions
+    Event.objects.filter(slug=slug).update(views=F('views') + 1)
+    
     organizer = Organizer.objects.all()
     media = event.media_set.all()
     review = event.review_set.all()
     ticket = Ticket.objects.filter(event=event)
+
     if request.method == 'POST':
+        name = request.POST.get('name')
+        comment_text = request.POST.get('comment')
         comment = Review.objects.create(
-            name = request.POST.get('name'),
-            comment = request.POST.get('comment'),
-            event = event
+            name=name,
+            comment=comment_text,
+            event=event
         )
         comment.save()
         return redirect('details', slug=event.slug)
 
-    context = {'event':event, 'media':media, 'review':review, 'ticket':ticket, 'organizer':organizer}
+    context = {
+        'event': event,
+        'media': media,
+        'review': review,
+        'ticket': ticket,
+        'organizer': organizer
+    }
+
     return render(request, 'eventx.html', context)
 
 def admin_details(request, slug):
-    event = Event.objects.get(slug=slug)
+    event = get_object_or_404(Event, slug=slug)
     tickets = event.ticket_set.all()
-    x = tickets.count()
-    y = event.ticket_price
-    sold = event.tickets_ava
-    left = "{:0.2f}".format(x/sold * 100)
-    res =  x*y
-    ava = sold-x
-    sum_total = '{:,}'.format(res)
+    tickets_count = tickets.count()
+    ticket_price = event.ticket_price
+    tickets_sold = event.tickets_ava
+    tickets_left_percentage = "{:.2f}".format(tickets_count / tickets_sold * 100)
+    total_revenue = '{:,}'.format(tickets_count * ticket_price)
+    tickets_available = tickets_sold - tickets_count
     event_date = event.date.date()
-    present = datetime.now().date()
-    # d1 = datetime.datetime.strptime(event_date, "%m/%d/%Y").date()
-    # date_check = datetime(event_date) < present
+    present_date = timezone.now().date()
 
     form = EventForm(request.POST or None, instance=event)
     if form.is_valid():
         form.save()
-         
+        return redirect('eventadmin', slug=slug)
 
-    context = {'event':event, 'tickets':tickets, 'form':form, 'left':left, 'sum_total':sum_total, 
-               'ava':ava, 'date': event_date, 'present':present}
+    context = {
+        'event': event,
+        'tickets': tickets,
+        'form': form,
+        'tickets_left_percentage': tickets_left_percentage,
+        'total_revenue': total_revenue,
+        'tickets_available': tickets_available,
+        'event_date': event_date,
+        'present_date': present_date,
+    }
     return render(request, 'eventadmin.html', context)
 
 def delete_event(request, slug):
@@ -286,47 +308,46 @@ def bookmarklist(request, pk):
     context = {'bookmarks':bookmarks}
     return render(request, 'bookmarks.html', context)
 
-@login_required(login_url='signin')   
+@login_required(login_url='signin')
 def organizer(request):
-    
     if request.method == 'POST':
-        headers = {
-            'Authorization': env('Bearer'),
-        }
         account_number = request.POST.get('aza_num')
         bank_code = request.POST.get('bank')
+        access_token = config('PAYSTACK_BEARER_TOKEN')  # Use decouple for storing sensitive data
 
-        response = requests.get('https://api.paystack.co/bank/resolve?account_number='+account_number+'&bank_code='+bank_code, headers=headers)
-        print(response.text)
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+        }
 
-        data = json.loads(response.text)
-        print(data)
-        x = data.get("data").get("account_name")
-        aza_name = x.lower()
-        account_namex = aza_name.lower()
-        
+        response = requests.get(
+            f'https://api.paystack.co/bank/resolve?account_number={account_number}&bank_code={bank_code}',
+            headers=headers
+        )
 
-        if aza_name != account_namex:
-            messages.error(request, "Account credentials invalid!.")
+        data = response.json()
+        account_name = data.get("data", {}).get("account_name", "").lower()
+        input_account_name = request.POST.get('account_name', "").lower()
+
+        if account_name != input_account_name:
+            messages.error(request, "Account credentials invalid!")
             return render(request, 'org_create.html')
-        else:
-            
-            org = Organizer.objects.create(
-                user = request.user,
-                phone = request.POST.get('phone'),
-                account_number = request.POST.get('aza_num'),
-                account_name = account_namex,
-                bank_code = request.POST.get('bank'),
-                biz_name = request.POST.get('biz_name'),
-                slug = slugify(request.POST['biz_name']),
-            )
-            org.save()
-            user_group = Group.objects.get(name="Organizers")
-            request.user.groups.add(user_group)
-            return redirect('profile', slug=org.slug)
-    
-    return render(request, 'org_create.html')
 
+        org = Organizer.objects.create(
+            user=request.user,
+            phone=request.POST.get('phone'),
+            account_number=account_number,
+            account_name=account_name,
+            bank_code=bank_code,
+            biz_name=request.POST.get('biz_name'),
+            slug=slugify(request.POST.get('biz_name')),
+        )
+
+        org.save()
+        user_group = Group.objects.get(name="Organizers")
+        request.user.groups.add(user_group)
+        return redirect('profile', slug=org.slug)
+
+    return render(request, 'org_create.html')
 def signup(request):
     if request.method == 'POST':
         global first_name
@@ -397,9 +418,6 @@ def signup(request):
 
 def verifymail(request):
     
-    
-    
-
     
     if request.method == 'POST':
         
