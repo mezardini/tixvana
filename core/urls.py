@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import RecoverPassword
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,13 +25,14 @@ urlpatterns = [
     path('organizer/<str:slug>/', views.profile, name='profile'),
     path('deleteevent/<str:slug>/', views.delete_event, name='deleteevent'),
     path('callback/', views.payment_response, name='payment_response'),
-    
+    path('password_recovery/', RecoverPassword.as_view(), name="password_recovery"),
+    path('pwrcvry/<str:pk>/<str:stry>/',
+         views.change_password, name="change_password")
+
 ]
-
-
 
 
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

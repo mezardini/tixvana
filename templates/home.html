@@ -71,14 +71,15 @@ https://templatemo.com/tm-535-softy-pinko
     <!-- ***** Header Area End ***** -->
 
     <!-- ***** Welcome Area Start ***** -->
-    <div class="welcome-area" id="welcome" style="background-image: url('{% static 'homeassets/css/images/eventz.jpg' %}');">
+    <div class="welcome-area" id="welcome" >
 
         <!-- ***** Header Text Start ***** -->
         <div class="header-text">
             <div class="container">
                 <div class="row">
-                    <div class="offset-xl-3 col-xl-6 offset-lg-2 col-lg-8 col-md-12 col-sm-12">
-                        <h1>Sell <strong>tickets</strong><br>to your <strong>events </strong>without hassle</h1>
+                    <div class="col-xl-12 col-lg-8 col-md-12 col-sm-12">
+                        <h1 class="text-capitalize" style="color:black; font-weight: bolder; font-size: xx-large;">Revolutionize Your Event Ticket Sales: 
+                            Say Goodbye to Hassles and Welcome Seamless Transactions</h1>
                         
                         <a href="{% url 'browse' %}" class="main-button-slider">Discover Events</a>
                         {% if request.user.is_authenticated and request.user in users_in_group %}
